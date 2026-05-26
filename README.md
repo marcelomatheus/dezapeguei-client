@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dezapeguei Client Web
 
-## Getting Started
+Frontend web da plataforma Dezapeguei, desenvolvido em Next.js (App Router), com TypeScript
+strict e arquitetura por features orientada a clean code e padrao bulletproof.
 
-First, run the development server:
+## Contexto do Monorepo
+
+- `dezapeguei-server`: backend NestJS + Prisma + Supabase (fonte de verdade de dominio).
+- `dezapeguei-client-web`: implementacao web que consome apenas a API do backend NestJS existente.
+
+## Regras de Arquitetura
+
+- Componentes de UI devem ser declarativos e sem regra de negocio.
+- Logica de negocio, side effects e chamadas async devem viver em hooks/servicos.
+- Codigo-fonte deve ser escrito em ingles.
+- Textos exibidos ao usuario devem estar em portugues com acentuação correta.
+- Nao adicionar comentarios em codigo (exceto obrigacao legal/licenca).
+- Aplicar responsabilidade unica (SRP), inversao de dependencia (DIP) e tipagem forte.
+- Usar apenas TypeScript no frontend.
+- Formularios devem usar React Hook Form + Zod.
+- Integracoes devem respeitar contratos oficiais REST/Socket do backend.
+
+Consulte a constituicao do projeto em `.specify/memory/constitution.md`.
+
+## Rotas-Alvo da Web
+
+As rotas devem espelhar o mapa funcional atual:
+
+- `/login`
+- `/register`
+- `/offers`
+- `/offers/:id`
+- `/offers/create`
+- `/offers/:id/edit`
+- `/offers/my`
+- `/chats`
+- `/chats/:id`
+- `/profile`
+- `/profile/edit`
+- `/wishlists`
+- `/users/:id`
+
+## Politica de Acesso de Rotas
+
+Rotas publicas:
+
+- `/offers`
+- `/offers/:id`
+- `/login`
+- `/register`
+
+Rotas protegidas (autenticacao obrigatoria):
+
+- `/offers/create`
+- `/offers/my`
+- `/offers/:id/edit`
+- `/chats`
+- `/chats/:id`
+- `/profile`
+- `/profile/edit`
+- `/wishlists`
+- `/users/:id`
+- `/notifications`
+- `/sales`
+
+Implementacao atual:
+
+- O guard de acesso esta em `middleware.ts`.
+- Tokens de sessao sao hidratados por `src/features/auth/hooks/use-auth-session.tsx`.
+- Integracao HTTP usa `src/shared/api/http-client.ts` com refresh-on-401.
+
+## Desenvolvimento
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Aplicacao local: `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Qualidade
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+Antes de merge, valide tambem:
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- alinhamento do escopo com milestones em `development-plan.md`;
+- aderencia aos contratos backend (`dezapeguei-server/README.md` e docs da API);
+- paridade comportamental com o app Flutter (`dezapeguei_flutter/README.md`).
