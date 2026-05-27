@@ -85,8 +85,3 @@ npm run lint
 npm run build
 ```
 
-Antes de merge, valide tambem:
-
-- alinhamento do escopo com milestones em `development-plan.md`;
-- aderencia aos contratos backend (`dezapeguei-server/README.md` e docs da API);
-- paridade comportamental com o app Flutter (`dezapeguei_flutter/README.md`).
