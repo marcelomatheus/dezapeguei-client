@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import { AppProviders } from "@/src/app/providers/app-providers";
 import { AppFooter } from "@/src/components/app-footer";
@@ -43,7 +44,9 @@ export default function RootLayout({
             <NotificationBell />
           </div>
           <div className="flex min-h-screen flex-col bg-zinc-100/60">
-            <AppHeader />
+            <Suspense fallback={null}>
+              <AppHeader />
+            </Suspense>
             <div id="main-content" tabIndex={-1} className="flex-1 pb-16 md:pb-0">
               {children}
             </div>
