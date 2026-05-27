@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRegisterForm } from "@/src/features/auth/hooks/use-register-form";
 import { useAuthSession } from "@/src/features/auth/hooks/use-auth-session";
 
-export default function RegisterPage() {
+function RegisterPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isAuthenticated, isHydrating } = useAuthSession();
@@ -71,5 +71,13 @@ export default function RegisterPage() {
         </p>
       </form>
     </main>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterPageContent />
+    </Suspense>
   );
 }

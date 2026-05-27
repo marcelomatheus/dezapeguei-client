@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { BackButton } from "@/src/components/back-button";
@@ -16,7 +16,7 @@ import { getOfferConditionLabel, getOfferStatusLabel } from "@/src/shared/i18n/e
 import { OfferCondition, OfferStatus } from "@/src/shared/types/domain";
 import { useAuthStore } from "@/src/shared/auth/auth-store";
 
-export default function OffersPage() {
+function OffersPageContent() {
   const searchParams = useSearchParams();
   const userId = useAuthStore((state) => state.user?.id);
   const [search, setSearch] = useState(() => searchParams.get("search") ?? "");
@@ -310,5 +310,13 @@ export default function OffersPage() {
         </div>
       ) : null}
     </main>
+  );
+}
+
+export default function OffersPage() {
+  return (
+    <Suspense fallback={null}>
+      <OffersPageContent />
+    </Suspense>
   );
 }
