@@ -2,6 +2,7 @@
 
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/src/components/ui/dialog";
 import { OfferForm } from "@/src/features/offers/components/offer-form";
+import { useCategoriesQuery } from "@/src/features/offers/hooks/use-categories-query";
 import { useUpdateOfferForm } from "@/src/features/offers/hooks/use-update-offer-form";
 
 type QuickEditOfferDialogProps = {
@@ -11,7 +12,8 @@ type QuickEditOfferDialogProps = {
 };
 
 export function QuickEditOfferDialog({ offerId, open, onOpenChange }: QuickEditOfferDialogProps) {
-  const { form, onSubmit, isLoading, isPending } = useUpdateOfferForm(offerId ?? "");
+  const { form, onSubmit, currentImageUrls, isLoading, isPending } = useUpdateOfferForm(offerId ?? "");
+  const categoriesQuery = useCategoriesQuery();
 
   if (!offerId) {
     return null;
@@ -23,11 +25,18 @@ export function QuickEditOfferDialog({ offerId, open, onOpenChange }: QuickEditO
         <DialogTitle>Edicao rapida do anuncio</DialogTitle>
         <DialogDescription>Atualize os principais campos sem sair de Minhas ofertas.</DialogDescription>
 
-        {isLoading ? (
+        {isLoading || categoriesQuery.isLoading ? (
           <div className="mt-4 text-sm text-zinc-600">Carregando dados da oferta...</div>
         ) : (
           <div className="mt-4 max-h-[75vh] overflow-y-auto pr-1">
-            <OfferForm mode="edit" form={form} onSubmit={onSubmit} isPending={isPending} />
+            <OfferForm
+              mode="edit"
+              categories={categoriesQuery.data ?? []}
+              currentImageUrls={currentImageUrls}
+              form={form}
+              onSubmit={onSubmit}
+              isPending={isPending}
+            />
           </div>
         )}
       </DialogContent>
