@@ -16,6 +16,6 @@ function getRequiredEnvValue(key: RequiredEnvKey): string {
 }
 
 export const env: EnvShape = {
-  NEXT_PUBLIC_API_URL: 'http://localhost:8080',
-  NEXT_PUBLIC_WS_URL: 'ws://localhost:8000',
+  NEXT_PUBLIC_API_URL: getRequiredEnvValue("NEXT_PUBLIC_API_URL"),
+  NEXT_PUBLIC_WS_URL: getRequiredEnvValue("NEXT_PUBLIC_WS_URL"),
 };
