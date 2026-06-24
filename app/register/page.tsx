@@ -10,7 +10,8 @@ function RegisterPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isAuthenticated, isHydrating } = useAuthSession();
-  const { form, onSubmit, isPending } = useRegisterForm();
+  const { form, onSubmit, isPending, isSuccess, confirmationEmail, confirmationMessage } =
+    useRegisterForm();
 
   useEffect(() => {
     if (!isHydrating && isAuthenticated) {
@@ -30,6 +31,19 @@ function RegisterPageContent() {
     <main className="mx-auto flex min-h-[80vh] w-full max-w-md items-center px-4 py-8 sm:px-6 sm:py-10">
       <form onSubmit={onSubmit} className="w-full rounded-xl border border-zinc-200 p-5 shadow-sm sm:p-6">
         <h1 className="mb-5 text-xl font-bold text-zinc-900 sm:text-2xl">Criar conta</h1>
+
+        {isSuccess ? (
+          <div className="mb-5 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-900">
+            <p className="font-semibold">Confirme sua conta para entrar.</p>
+            <p className="mt-1">
+              {confirmationMessage ??
+                "Enviamos um e-mail de confirmação para ativar sua conta."}
+            </p>
+            {confirmationEmail ? (
+              <p className="mt-1 font-medium">{confirmationEmail}</p>
+            ) : null}
+          </div>
+        ) : null}
 
         <label className="mb-2 block text-sm font-medium">Nome</label>
         <input
@@ -64,7 +78,7 @@ function RegisterPageContent() {
         </button>
 
         <p className="mt-4 text-sm text-zinc-700">
-          Já tem conta?{" "}
+          {isSuccess ? "Já confirmou o e-mail? " : "Já tem conta? "}
           <Link href="/login" className="font-semibold text-blue-600">
             Entrar
           </Link>

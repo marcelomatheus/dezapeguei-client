@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { PageSkeleton } from "@/src/components/page-skeleton";
 import { SaleDetail } from "@/src/features/sales/components/sale-detail";
 import { useSales } from "@/src/features/sales/hooks/use-sales";
 
@@ -10,7 +11,7 @@ export default function SaleDetailPage() {
   const { saleQuery, updateSaleStatus, isUpdatingStatus } = useSales(saleId);
 
   if (saleQuery.isLoading) {
-    return <main className="px-4 py-6 sm:px-6">Carregando...</main>;
+    return <PageSkeleton variant="detail" />;
   }
 
   if (!saleQuery.data) {
@@ -20,7 +21,7 @@ export default function SaleDetailPage() {
   const sale = saleQuery.data;
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-8">
+    <main className="page-motion mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-8">
       <SaleDetail
         sale={sale}
         isUpdating={isUpdatingStatus}

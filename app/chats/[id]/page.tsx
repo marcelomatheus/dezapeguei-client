@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { BackButton } from "@/src/components/back-button";
+import { PageSkeleton } from "@/src/components/page-skeleton";
 import { ChatRoom } from "@/src/features/chats/components/chat-room";
 import { ConfirmSaleButton } from "@/src/features/chats/components/confirm-sale-button";
 import { useMessagesQuery } from "@/src/features/chats/hooks/use-messages-query";
@@ -54,7 +55,7 @@ export default function ChatRoomPage() {
   }, [currentUserId, markAsRead, messagesQuery.data]);
 
   if (messagesQuery.isLoading) {
-    return <main className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8">Carregando conversa...</main>;
+    return <PageSkeleton variant="detail" />;
   }
 
   return (

@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { BackButton } from "@/src/components/back-button";
+import { PageSkeleton } from "@/src/components/page-skeleton";
 import { useCategoriesQuery } from "@/src/features/offers/hooks/use-categories-query";
 import { useUpdateOfferForm } from "@/src/features/offers/hooks/use-update-offer-form";
 import { OfferForm } from "../../../../src/features/offers/components/offer-form";
@@ -13,7 +14,7 @@ export default function EditOfferPage() {
   const categoriesQuery = useCategoriesQuery();
 
   if (isLoading || categoriesQuery.isLoading) {
-    return <main className="px-4 py-6 text-zinc-800 sm:px-6">Carregando dados da oferta...</main>;
+    return <PageSkeleton variant="form" />;
   }
 
   return (

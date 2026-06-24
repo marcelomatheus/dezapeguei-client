@@ -1,17 +1,15 @@
 "use client";
 
-import Image from "next/image";
+import Link from "next/link";
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { SlidersHorizontal } from "lucide-react";
 import { Skeleton } from "@/src/components/ui/skeleton";
-import { BackButton } from "@/src/components/back-button";
 import { CategoryFilter } from "@/src/features/offers/components/category-filter";
 import { OfferGrid } from "@/src/features/offers/components/offer-grid";
 import { SearchBar } from "@/src/features/offers/components/search-bar";
 import { useCategoriesQuery } from "@/src/features/offers/hooks/use-categories-query";
 import { useInfiniteOffers } from "@/src/features/offers/hooks/use-infinite-offers";
-import { WishlistGrid } from "@/src/features/wishlists/components/wishlist-grid";
-import { useWishlistQuery } from "@/src/features/wishlists/hooks/use-wishlist-query";
 import { getOfferConditionLabel, getOfferStatusLabel } from "@/src/shared/i18n/enum-labels";
 import { OfferCondition, OfferStatus } from "@/src/shared/types/domain";
 import { useAuthStore } from "@/src/shared/auth/auth-store";
@@ -63,7 +61,6 @@ function OffersPageContent() {
     status: status === "ALL" ? undefined : status,
   });
   const categoriesQuery = useCategoriesQuery();
-  const wishlistQuery = useWishlistQuery();
   const highlightedCategories = (categoriesQuery.data ?? []).slice(0, 8);
 
   const offers = useMemo(() => {
@@ -109,42 +106,28 @@ function OffersPageContent() {
   };
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 py-6 sm:gap-6 sm:px-6 sm:py-8">
-      <div className="flex items-center justify-between gap-3">
-        <BackButton fallbackHref="/" />
-        <button
-          type="button"
-          onClick={resetFilters}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-700"
-        >
-          Limpar filtros
-        </button>
-      </div>
-
-      <section className="relative overflow-hidden rounded-2xl border border-orange-200 bg-linear-to-r from-amber-100 via-orange-100 to-rose-100">
-        <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-orange-200/50 blur-2xl" />
-        <div className="grid items-center gap-4 p-5 sm:p-7 lg:grid-cols-[1.1fr_auto]">
+    <main className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 sm:py-6">
+      <section className="rounded-lg border border-orange-200 bg-orange-50 px-4 py-3">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-orange-900">Marketplace dezapeguei</p>
-            <h2 className="mt-2 text-2xl font-black text-zinc-900 sm:text-3xl">Venda rapido. Compre melhor.</h2>
-            <p className="mt-2 max-w-xl text-sm text-zinc-700 sm:text-base">
-              Descubra ofertas locais com filtros inteligentes, salve favoritos e negocie direto com o vendedor.
-            </p>
+            <p className="text-xs font-bold uppercase tracking-wide text-orange-700">Marketplace Dezapeguei</p>
+            <h1 className="mt-1 text-2xl font-black text-zinc-950 sm:text-3xl">Ofertas para comprar agora</h1>
+            <p className="mt-1 text-sm text-zinc-700">Compare preços, salve favoritos e negocie direto com vendedores próximos.</p>
           </div>
-          <Image
-            src="/offers-hero.svg"
-            alt="Destaque de ofertas"
-            width={280}
-            height={180}
-            priority
-            className="mx-auto w-full max-w-64 drop-shadow-sm sm:max-w-72"
-          />
+          <div className="flex flex-wrap gap-2">
+            <Link href="/offers/create" className="rounded-md bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700">
+              Anunciar grátis
+            </Link>
+            <Link href="/comunidades" className="rounded-md border border-orange-300 bg-white px-4 py-2 text-sm font-semibold text-orange-800 hover:bg-orange-100">
+              Comunidades
+            </Link>
+          </div>
         </div>
       </section>
 
-      <section className="rounded-xl border border-zinc-200 bg-white p-4 sm:p-5">
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <h2 className="text-lg font-bold text-zinc-900">Categorias em destaque</h2>
+      <section className="rounded-lg border border-zinc-200 bg-white p-3">
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <h2 className="text-sm font-bold text-zinc-900">Categorias em destaque</h2>
           {categoryId ? (
             <button
               type="button"
@@ -155,7 +138,7 @@ function OffersPageContent() {
             </button>
           ) : null}
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex gap-2 overflow-x-auto pb-1">
           {highlightedCategories.map((category) => {
             const active = category.id === categoryId;
 
@@ -164,7 +147,7 @@ function OffersPageContent() {
                 key={category.id}
                 type="button"
                 onClick={() => setCategoryId(category.id)}
-                className={`rounded-full border px-3 py-2 text-sm font-medium transition ${
+                className={`shrink-0 rounded-full border px-3 py-1.5 text-sm font-medium transition ${
                   active
                     ? "border-orange-500 bg-orange-500 text-white"
                     : "border-zinc-300 bg-zinc-50 text-zinc-800 hover:border-orange-300 hover:bg-orange-50"
@@ -180,17 +163,8 @@ function OffersPageContent() {
         </div>
       </section>
 
-      {userId ? (
-        <section className="rounded-xl border border-zinc-200 bg-white p-4 sm:p-5">
-          <h2 className="mb-3 text-lg font-bold text-zinc-900">Seus favoritos</h2>
-          <WishlistGrid items={wishlistQuery.data ?? []} isLoading={wishlistQuery.isLoading} />
-        </section>
-      ) : null}
-
-      <header className="flex flex-col gap-3">
-        <h1 className="text-xl font-bold text-zinc-900 sm:text-2xl">Ofertas</h1>
-
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto]">
+      <header className="flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto] items-end">
           <SearchBar value={search} onChange={setSearch} placeholder="Buscar por título" />
           <CategoryFilter
             categories={categoriesQuery.data ?? []}
@@ -199,7 +173,11 @@ function OffersPageContent() {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-3 rounded-xl border border-zinc-200 bg-white p-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 border-t border-zinc-100 pt-3 md:grid-cols-2 lg:grid-cols-7">
+          <div className="flex items-center gap-2 text-sm font-semibold text-zinc-800 lg:col-span-1">
+            <SlidersHorizontal className="h-4 w-4 text-orange-600" />
+            Filtros
+          </div>
           <label className="flex flex-col gap-1 text-sm text-zinc-700">
             Status
             <select
@@ -278,16 +256,24 @@ function OffersPageContent() {
               className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm"
             />
           </label>
+          <div className="flex items-end">
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+            >
+              Limpar filtros
+            </button>
+          </div>
         </div>
       </header>
 
       {offersQuery.isLoading ? (
-        <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <li key={index} className="rounded-xl border border-zinc-200 p-4">
-              <Skeleton className="h-36 w-full" />
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {Array.from({ length: 10 }).map((_, index) => (
+            <li key={index} className="rounded-lg border border-zinc-200 p-3">
+              <Skeleton className="aspect-square w-full" />
               <Skeleton className="mt-3 h-4 w-3/4" />
-              <Skeleton className="mt-2 h-4 w-full" />
               <Skeleton className="mt-2 h-4 w-1/2" />
             </li>
           ))}
@@ -305,7 +291,14 @@ function OffersPageContent() {
             disabled={offersQuery.isFetchingNextPage}
             className="w-full rounded-lg border border-zinc-300 px-4 py-2 text-sm sm:w-auto"
           >
-            {offersQuery.isFetchingNextPage ? "Carregando..." : "Carregar mais"}
+            {offersQuery.isFetchingNextPage ? (
+              <>
+                <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" aria-hidden="true" />
+                <span className="sr-only">Carregando</span>
+              </>
+            ) : (
+              "Carregar mais"
+            )}
           </button>
         </div>
       ) : null}

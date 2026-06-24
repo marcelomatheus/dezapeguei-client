@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { BackButton } from "@/src/components/back-button";
+import { PageSkeleton } from "@/src/components/page-skeleton";
 import { OfferDetail } from "@/src/features/offers/components/offer-detail";
 import { WishlistButton } from "@/src/features/wishlists/components/wishlist-button";
 import { useOfferActionsGuards } from "@/src/features/offers/hooks/use-offer-actions-guards";
@@ -36,7 +37,7 @@ export default function OfferDetailPage() {
       : null;
 
   if (offerQuery.isLoading) {
-    return <main className="px-4 py-6 sm:px-6">Carregando...</main>;
+    return <PageSkeleton variant="detail" />;
   }
 
   if (!offer) {
@@ -44,13 +45,13 @@ export default function OfferDetailPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
+    <main className="page-motion mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
       <div className="mb-4">
         <BackButton fallbackHref="/offers" />
       </div>
       <OfferDetail offer={offer} seller={sellerQuery.data} categoryName={categoryName} whatsappUrl={whatsappUrl} />
 
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <div className="mt-6 flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-4 sm:flex-row sm:flex-wrap">
         <WishlistButton offerId={offer.id} />
         <button
           type="button"
@@ -62,14 +63,14 @@ export default function OfferDetailPage() {
             }
             router.push("/login");
           }}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm disabled:opacity-60"
+          className="rounded-md border border-orange-300 px-4 py-2 text-sm font-semibold text-orange-800 disabled:opacity-60 hover:bg-orange-50"
         >
           {startConversation.isPending ? "Abrindo conversa..." : "Conversar com vendedor"}
         </button>
         <button
           type="button"
           disabled={!saleGuard.canCreateSale}
-          className="rounded-lg bg-zinc-900 px-3 py-2 text-sm text-white disabled:opacity-60"
+          className="rounded-md bg-orange-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60 hover:bg-orange-700"
         >
           Comprar agora
         </button>

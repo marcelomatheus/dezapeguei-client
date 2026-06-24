@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { BackButton } from "@/src/components/back-button";
+import { PageSkeleton } from "@/src/components/page-skeleton";
 import { httpClient } from "@/src/shared/api/http-client";
 import { UserProfile } from "@/src/shared/types/domain";
 
@@ -22,7 +23,7 @@ export default function SellerProfilePage() {
   });
 
   if (userQuery.isLoading) {
-    return <main className="px-4 py-6 sm:px-6">Carregando...</main>;
+    return <PageSkeleton variant="detail" />;
   }
 
   if (!userQuery.data) {

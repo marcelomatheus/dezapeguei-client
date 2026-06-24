@@ -1,6 +1,7 @@
 "use client";
 
 import { BackButton } from "@/src/components/back-button";
+import { PageSkeleton } from "@/src/components/page-skeleton";
 import { ProfileForm } from "@/src/features/profile/components/profile-form";
 import { useUpdateProfileForm } from "@/src/features/profile/hooks/use-update-profile-form";
 
@@ -8,7 +9,7 @@ export default function ProfileEditPage() {
   const { form, onSubmit, isPending, profileQuery } = useUpdateProfileForm();
 
   if (profileQuery.isLoading) {
-    return <main className="px-4 py-6 sm:px-6">Carregando...</main>;
+    return <PageSkeleton variant="form" />;
   }
 
   return (

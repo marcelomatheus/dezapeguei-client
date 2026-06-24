@@ -8,6 +8,8 @@ const quickActions = [
   { href: "/offers/my", label: "Gerenciar minhas ofertas", description: "Edite status, valores e dados dos seus anúncios." },
   { href: "/wishlists", label: "Meus favoritos", description: "Acompanhe produtos que você salvou para comprar depois." },
   { href: "/chats", label: "Minhas conversas", description: "Negocie com vendedores e compradores em tempo real." },
+  { href: "/comunidades", label: "Comunidades", description: "Entre em salas públicas para acompanhar conversas e ofertas de empreendedores." },
+  { href: "/empreendedor/dashboard", label: "Central empreendedor", description: "Valide seu negócio, acompanhe assinatura, vitrine e recursos comerciais." },
   { href: "/notifications", label: "Notificações", description: "Visualize alertas de preço, mensagens e atualizações." },
   { href: "/sales", label: "Vendas e compras", description: "Consulte transações e andamento das vendas." },
 ];

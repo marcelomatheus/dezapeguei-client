@@ -12,7 +12,7 @@ export default function NotificationsPage() {
     <main className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold text-zinc-900 sm:text-2xl">Notificacoes</h1>
+          <h1 className="text-xl font-bold text-zinc-900 sm:text-2xl">Notificações</h1>
           <p className="text-sm text-zinc-700">Acompanhe novidades de ofertas, chats e vendas.</p>
         </div>
         <button
