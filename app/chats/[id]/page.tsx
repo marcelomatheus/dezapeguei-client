@@ -4,8 +4,10 @@ import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { BackButton } from "@/src/components/back-button";
 import { PageSkeleton } from "@/src/components/page-skeleton";
+import { ChatList } from "@/src/features/chats/components/chat-list";
 import { ChatRoom } from "@/src/features/chats/components/chat-room";
 import { ConfirmSaleButton } from "@/src/features/chats/components/confirm-sale-button";
+import { useChatsQuery } from "@/src/features/chats/hooks/use-chats-query";
 import { useMessagesQuery } from "@/src/features/chats/hooks/use-messages-query";
 import { useSendMessage } from "@/src/features/chats/hooks/use-send-message";
 import { useChatSocket } from "@/src/features/chats/hooks/use-chat-socket";
@@ -19,6 +21,7 @@ export default function ChatRoomPage() {
   const chatId = params.id;
   const currentUserId = useAuthStore((state) => state.user?.id);
   const messagesQuery = useMessagesQuery(chatId);
+  const chatsQuery = useChatsQuery();
   const sendMessage = useSendMessage(chatId);
   const markAsRead = useMarkAsRead(chatId);
   const chatQuery = useChatQuery(chatId);
@@ -59,26 +62,45 @@ export default function ChatRoomPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-[70vh] w-full max-w-4xl flex-col px-4 py-6 sm:h-[80vh] sm:px-6 sm:py-8">
-      <div className="mb-3">
-        <BackButton fallbackHref="/chats" />
-      </div>
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-xl font-bold sm:text-2xl">{chatTitle}</h1>
-        {chatQuery.data ? (
-          <ConfirmSaleButton
-            chat={chatQuery.data}
-            offer={offerQuery.data ?? null}
+    <main className="min-h-[calc(100vh-96px)] bg-[#eef3fb] px-4 py-4 sm:px-6">
+      <div className="mx-auto grid h-[calc(100vh-140px)] max-w-7xl gap-4 lg:grid-cols-[360px_1fr]">
+        <ChatList
+          chats={chatsQuery.data ?? []}
+          currentUserId={currentUserId}
+          activeChatId={chatId}
+          className="hidden lg:flex"
+        />
+        <div className="flex min-h-0 flex-col gap-3">
+          <div className="flex items-center justify-between gap-3 lg:hidden">
+            <BackButton fallbackHref="/chats" />
+            {chatQuery.data ? (
+              <ConfirmSaleButton
+                chat={chatQuery.data}
+                offer={offerQuery.data ?? null}
+                currentUserId={currentUserId}
+              />
+            ) : null}
+          </div>
+          <div className="hidden justify-end lg:flex">
+            {chatQuery.data ? (
+              <ConfirmSaleButton
+                chat={chatQuery.data}
+                offer={offerQuery.data ?? null}
+                currentUserId={currentUserId}
+              />
+            ) : null}
+          </div>
+          <ChatRoom
+            messages={messagesQuery.data ?? []}
             currentUserId={currentUserId}
+            isSending={sendMessage.isPending}
+            title={chatTitle}
+            subtitle={offerQuery.data ? `Negociando: ${offerQuery.data.title}` : "Negociação direta"}
+            offer={offerQuery.data ?? null}
+            onSendMessage={(content) => sendMessage.sendMessage({ content })}
           />
-        ) : null}
+        </div>
       </div>
-      <ChatRoom
-        messages={messagesQuery.data ?? []}
-        currentUserId={currentUserId}
-        isSending={sendMessage.isPending}
-        onSendMessage={(content) => sendMessage.sendMessage({ content })}
-      />
     </main>
   );
 }
