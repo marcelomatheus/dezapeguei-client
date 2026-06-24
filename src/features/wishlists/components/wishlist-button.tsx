@@ -1,7 +1,7 @@
 "use client";
 
 import { Heart } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useAuthSession } from "@/src/shared/auth/use-auth-session";
 import { useWishlistQuery } from "@/src/features/wishlists/hooks/use-wishlist-query";
 import { useToggleWishlist } from "@/src/features/wishlists/hooks/use-toggle-wishlist";
@@ -14,6 +14,8 @@ type WishlistButtonProps = {
 
 export function WishlistButton({ offerId, className }: WishlistButtonProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { isHydrating } = useAuthSession();
   const userId = useAuthStore((state) => state.user?.id);
   const wishlistQuery = useWishlistQuery();
@@ -28,7 +30,8 @@ export function WishlistButton({ offerId, className }: WishlistButtonProps) {
       disabled={isPending || isHydrating}
       onClick={() => {
         if (!userId) {
-          router.push("/login");
+          const currentUrl = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+          router.push(`/login?redirect=${encodeURIComponent(currentUrl)}`);
           return;
         }
 

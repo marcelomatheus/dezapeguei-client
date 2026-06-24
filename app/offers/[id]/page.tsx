@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 import { BackButton } from "@/src/components/back-button";
 import { PageSkeleton } from "@/src/components/page-skeleton";
 import { OfferDetail } from "@/src/features/offers/components/offer-detail";
@@ -11,6 +12,7 @@ import { useOfferQuery } from "@/src/features/offers/hooks/use-offer-query";
 import { useStartConversation } from "@/src/features/chats/hooks/use-start-conversation";
 import { useUserQuery } from "@/src/features/users/hooks/use-user-query";
 import { useCreateSaleGuard } from "@/src/features/sales/hooks/use-create-sale-guard";
+import { useCreateSale } from "@/src/features/sales/hooks/use-create-sale";
 import { normalizePhoneForWhatsapp } from "@/src/shared/utils/formatters";
 import { useAuthSession } from "@/src/shared/auth/use-auth-session";
 
@@ -19,9 +21,10 @@ export default function OfferDetailPage() {
   const router = useRouter();
   const offerId = params.id;
   const offerQuery = useOfferQuery(offerId);
-  const { isAuthenticated } = useAuthSession();
+  const { isAuthenticated, user } = useAuthSession();
 
   const startConversation = useStartConversation();
+  const createSale = useCreateSale();
   const offer = offerQuery.data ?? null;
   const sellerQuery = useUserQuery(offer?.sellerId);
   const categoriesQuery = useCategoriesQuery();
@@ -44,6 +47,9 @@ export default function OfferDetailPage() {
     return <main className="px-4 py-6 sm:px-6">Oferta não encontrada.</main>;
   }
 
+  const loginRedirectUrl = `/login?redirect=${encodeURIComponent(`/offers/${offer.id}`)}`;
+  const goToLogin = () => router.push(loginRedirectUrl);
+
   return (
     <main className="page-motion mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
       <div className="mb-4">
@@ -61,7 +67,15 @@ export default function OfferDetailPage() {
               void startConversation.startConversation(offer.sellerId);
               return;
             }
-            router.push("/login");
+
+            if (!isAuthenticated) {
+              goToLogin();
+              return;
+            }
+
+            if (guards.reason) {
+              toast.info(guards.reason);
+            }
           }}
           className="rounded-md border border-orange-300 px-4 py-2 text-sm font-semibold text-orange-800 disabled:opacity-60 hover:bg-orange-50"
         >
@@ -69,10 +83,29 @@ export default function OfferDetailPage() {
         </button>
         <button
           type="button"
-          disabled={!saleGuard.canCreateSale}
+          disabled={createSale.isPending || (isAuthenticated && !saleGuard.canCreateSale)}
+          onClick={() => {
+            if (!isAuthenticated || !user) {
+              goToLogin();
+              return;
+            }
+
+            if (!saleGuard.canCreateSale) {
+              if (saleGuard.reason) {
+                toast.info(saleGuard.reason);
+              }
+              return;
+            }
+
+            void createSale.createSale({
+              offerId: offer.id,
+              buyerId: user.id,
+              amount: offer.promotion && offer.promotion > 0 ? offer.promotion : offer.price,
+            });
+          }}
           className="rounded-md bg-orange-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60 hover:bg-orange-700"
         >
-          Comprar agora
+          {createSale.isPending ? "Confirmando..." : "Comprar agora"}
         </button>
       </div>
 

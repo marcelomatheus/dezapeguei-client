@@ -17,6 +17,10 @@ export function useStartConversation() {
         throw new Error("Usuário não autenticado.");
       }
 
+      if (currentUserId === targetUserId) {
+        throw new Error("Você não pode abrir conversa consigo mesmo.");
+      }
+
       return findOrCreateDirectChat([currentUserId, targetUserId]);
     },
     onSuccess: (chat) => {

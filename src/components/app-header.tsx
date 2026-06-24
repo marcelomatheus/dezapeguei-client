@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BadgeCheck, Bell, ChevronDown, Heart, LayoutGrid, LogOut, MessageCircle, MessagesSquare, PackagePlus, Search, ShoppingBag, Store, UserRound } from "lucide-react";
 import { useAuthStore } from "@/src/shared/auth/auth-store";
@@ -55,10 +55,9 @@ export function AppHeader() {
   const user = useAuthStore((state) => state.user);
   const { logout } = useAuthSession();
   const categoriesQuery = useCategoriesQuery();
-  const [search, setSearch] = useState(searchParams.get("search") ?? "");
-  const [categoryId, setCategoryId] = useState(searchParams.get("categoryId") ?? "");
 
   const categoryOptions = useMemo(() => categoriesQuery.data ?? [], [categoriesQuery.data]);
+  const searchKey = searchParams.toString();
 
   const showHeader = pathname !== "/login" && pathname !== "/register";
 
@@ -69,13 +68,16 @@ export function AppHeader() {
   const submitHeaderFilters = (event: FormEvent) => {
     event.preventDefault();
 
+    const formData = new FormData(event.currentTarget as HTMLFormElement);
+    const search = String(formData.get("search") ?? "").trim();
+    const categoryId = String(formData.get("categoryId") ?? "").trim();
     const params = new URLSearchParams();
 
-    if (search.trim().length > 0) {
-      params.set("search", search.trim());
+    if (search.length > 0) {
+      params.set("search", search);
     }
 
-    if (categoryId.trim().length > 0) {
+    if (categoryId.length > 0) {
       params.set("categoryId", categoryId);
     }
 
@@ -89,13 +91,13 @@ export function AppHeader() {
           dezapeguei
         </Link>
 
-        <form onSubmit={submitHeaderFilters} className="hidden flex-1 items-center gap-2 md:flex">
+        <form key={searchKey} onSubmit={submitHeaderFilters} className="hidden flex-1 items-center gap-2 md:flex">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
             <input
               aria-label="Buscar ofertas"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              name="search"
+              defaultValue={searchParams.get("search") ?? ""}
               placeholder='Buscar "apartamento", "nike", "iphone"'
               className="h-10 w-full rounded-full border border-zinc-300 bg-zinc-50 pl-10 pr-4 text-sm outline-none transition focus:border-orange-400 focus:bg-white"
             />
@@ -103,11 +105,11 @@ export function AppHeader() {
 
           <select
             aria-label="Filtrar por categoria"
-            value={categoryId}
-            onChange={(event) => setCategoryId(event.target.value)}
+            name="categoryId"
+            defaultValue={searchParams.get("categoryId") ?? ""}
             className="h-10 rounded-full border border-zinc-300 bg-white px-3 text-sm text-zinc-700"
           >
-            <option value="">Todas categorias</option>
+            <option value="">Todas as categorias</option>
             {categoryOptions.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}

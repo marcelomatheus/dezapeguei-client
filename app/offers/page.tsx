@@ -17,6 +17,11 @@ import { useAuthStore } from "@/src/shared/auth/auth-store";
 
 function OffersPageContent() {
   const searchParams = useSearchParams();
+
+  return <OffersPageState key={searchParams.toString()} searchParams={searchParams} />;
+}
+
+function OffersPageState({ searchParams }: { searchParams: ReturnType<typeof useSearchParams> }) {
   const userId = useAuthStore((state) => state.user?.id);
   const [search, setSearch] = useState(() => searchParams.get("search") ?? "");
   const [status, setStatus] = useState<OfferStatus | "ALL">(() => {
