@@ -82,7 +82,7 @@ export function OfferForm(props: OfferFormProps) {
           name="price"
           render={({ field }) => (
             <InputMoney
-              placeholder="Preco"
+              placeholder="Preço"
               value={field.value}
               onValueChange={field.onChange}
               className={fieldClass}
@@ -165,14 +165,14 @@ export function OfferForm(props: OfferFormProps) {
     <form onSubmit={props.onSubmit} className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
       <h1 className="text-2xl font-bold text-zinc-900">Editar oferta</h1>
 
-      <input {...editForm.register("title")} placeholder="Titulo" className={fieldClass} />
-      <textarea {...editForm.register("description")} placeholder="Descricao" className={`${fieldClass} min-h-28`} />
+      <input {...editForm.register("title")} placeholder="Título" className={fieldClass} />
+      <textarea {...editForm.register("description")} placeholder="Descrição" className={`${fieldClass} min-h-28`} />
       <Controller
         control={editForm.control}
         name="price"
         render={({ field }) => (
           <InputMoney
-            placeholder="Preco"
+            placeholder="Preço"
             value={field.value}
             onValueChange={field.onChange}
             className={fieldClass}
@@ -246,7 +246,7 @@ export function OfferForm(props: OfferFormProps) {
       />
 
       <Button type="submit" isLoading={props.isPending}>
-        Salvar alteracoes
+        Salvar alterações
       </Button>
     </form>
   );

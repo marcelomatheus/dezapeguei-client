@@ -18,7 +18,7 @@ export function NotificationItem({ notification, onRead }: NotificationItemProps
         <p className="text-sm text-zinc-900">{notification.message}</p>
         <div className="flex items-center gap-4 text-xs">
           <span className={notification.isRead ? "text-zinc-600" : "font-semibold text-orange-800"}>
-            {notification.isRead ? "Lida" : "Nao lida"}
+            {notification.isRead ? "Lida" : "Não lida"}
           </span>
           <button
             type="button"

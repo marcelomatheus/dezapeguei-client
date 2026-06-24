@@ -74,7 +74,7 @@ export function useUpdateProfileForm() {
   const mutation = useMutation({
     mutationFn: async (values: UpdateProfilePayload) => {
       if (!userId) {
-        throw new Error("Usuario nao autenticado.");
+        throw new Error("Usuário não autenticado.");
       }
 
       return updateProfile(userId, values);

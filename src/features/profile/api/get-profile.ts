@@ -6,7 +6,7 @@ export async function getProfile(): Promise<UserProfileModel> {
   const userId = authResponse.data?.id;
 
   if (!userId) {
-    throw new Error("Nao foi possivel identificar o usuario autenticado.");
+    throw new Error("Não foi possível identificar o usuário autenticado.");
   }
 
   const response = await httpClient.get(`/users/${userId}`);

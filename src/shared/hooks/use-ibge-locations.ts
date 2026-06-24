@@ -20,7 +20,7 @@ export function useIbgeStates() {
     queryKey: ["ibge-states"],
     queryFn: async () => {
       const response = await fetch(`${IBGE_BASE_URL}/estados?orderBy=nome`);
-      if (!response.ok) throw new Error("Nao foi possivel carregar estados.");
+      if (!response.ok) throw new Error("Não foi possível carregar estados.");
       return (await response.json()) as IbgeState[];
     },
     staleTime: 24 * 60 * 60 * 1000,
@@ -32,7 +32,7 @@ export function useIbgeCities(uf?: string) {
     queryKey: ["ibge-cities", uf],
     queryFn: async () => {
       const response = await fetch(`${IBGE_BASE_URL}/estados/${uf}/municipios?orderBy=nome`);
-      if (!response.ok) throw new Error("Nao foi possivel carregar municipios.");
+      if (!response.ok) throw new Error("Não foi possível carregar municípios.");
       return (await response.json()) as IbgeCity[];
     },
     enabled: Boolean(uf),

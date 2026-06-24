@@ -59,7 +59,7 @@ export async function getProfile(): Promise<UserProfileModel> {
   const userId = authResponse.data?.id;
 
   if (!userId) {
-    throw new Error("Nao foi possivel recuperar o perfil autenticado.");
+    throw new Error("Não foi possível recuperar o perfil autenticado.");
   }
 
   const response = await httpClient.get(`/users/${userId}`);

@@ -22,7 +22,7 @@ export function QuickEditOfferDialog({ offerId, open, onOpenChange }: QuickEditO
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DialogTitle>Edicao rapida do anuncio</DialogTitle>
+        <DialogTitle>Edição rápida do anúncio</DialogTitle>
         <DialogDescription>Atualize os principais campos sem sair de Minhas ofertas.</DialogDescription>
 
         {isLoading || categoriesQuery.isLoading ? (

@@ -2,13 +2,13 @@ import { z } from "zod";
 import { UserProfileSchema } from "@/src/shared/schemas/profile.schema";
 
 export const LoginPayloadSchema = z.object({
-  email: z.string().email("Digite um e-mail valido."),
+  email: z.string().email("Digite um e-mail válido."),
   password: z.string().min(1, "Digite sua senha."),
 });
 
 export const RegisterPayloadSchema = z.object({
   name: z.string().min(2, "Informe seu nome."),
-  email: z.string().email("Digite um e-mail valido."),
+  email: z.string().email("Digite um e-mail válido."),
   password: z.string().min(1, "Digite uma senha."),
 });
 
