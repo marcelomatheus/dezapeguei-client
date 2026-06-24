@@ -29,6 +29,30 @@ const mutationContextMap: Record<string, string> = {
   "PATCH /users": "Falha ao atualizar perfil.",
 };
 
+const backendMessageMap: Record<string, string> = {
+  "Confirme sua conta pelo e-mail que enviamos antes de entrar.":
+    "Confirme sua conta pelo e-mail que enviamos antes de entrar.",
+  "Invalid credentials": "E-mail ou senha inválidos.",
+  "E-mail ou senha inválidos.": "E-mail ou senha inválidos.",
+  "Email already in use": "Este e-mail já está cadastrado.",
+  "Este e-mail já está cadastrado.": "Este e-mail já está cadastrado.",
+};
+
+function getBackendMessage(error: AxiosError): string | undefined {
+  const data = error.response?.data as { message?: string | string[] } | undefined;
+  const rawMessage = data?.message;
+
+  if (Array.isArray(rawMessage)) {
+    return rawMessage.join(" ");
+  }
+
+  if (!rawMessage) {
+    return undefined;
+  }
+
+  return backendMessageMap[rawMessage] ?? rawMessage;
+}
+
 function getMutationContext(error: AxiosError): string | undefined {
   const method = error.config?.method?.toUpperCase();
   const url = error.config?.url;
@@ -56,20 +80,19 @@ function getMutationContext(error: AxiosError): string | undefined {
 export function normalizeApiError(error: unknown): string {
   if (error instanceof AxiosError) {
     const contextMessage = getMutationContext(error);
+    const backendMessage = getBackendMessage(error);
     const status = error.response?.status;
+
+    if (backendMessage) {
+      return contextMessage
+        ? `${contextMessage} ${backendMessage}`
+        : backendMessage;
+    }
 
     if (status && statusMessageMap[status]) {
       return contextMessage
         ? `${contextMessage} ${statusMessageMap[status]}`
         : statusMessageMap[status];
-    }
-
-    const backendMessage = error.response?.data as { message?: string } | undefined;
-
-    if (backendMessage?.message) {
-      return contextMessage
-        ? `${contextMessage} ${backendMessage.message}`
-        : backendMessage.message;
     }
 
     if (contextMessage) {

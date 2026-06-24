@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useMemo, useReducer } from "react";
 import { io, Socket } from "socket.io-client";
 import { env } from "@/src/shared/config/env";
 import { useAuthStore } from "@/src/shared/auth/auth-store";
@@ -16,18 +16,43 @@ type SocketProviderProps = {
   children: ReactNode;
 };
 
+type SocketState = {
+  socket: Socket | null;
+  isConnected: boolean;
+};
+
+type SocketAction =
+  | { type: "connected" }
+  | { type: "disconnected" }
+  | { type: "ready"; socket: Socket }
+  | { type: "reset" };
+
+const initialSocketState: SocketState = {
+  socket: null,
+  isConnected: false,
+};
+
+function socketReducer(state: SocketState, action: SocketAction): SocketState {
+  switch (action.type) {
+    case "connected":
+      return { ...state, isConnected: true };
+    case "disconnected":
+      return { ...state, isConnected: false };
+    case "ready":
+      return { socket: action.socket, isConnected: action.socket.connected };
+    case "reset":
+      return initialSocketState;
+    default:
+      return state;
+  }
+}
+
 export function SocketProvider({ children }: SocketProviderProps) {
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
+  const [{ socket, isConnected }, dispatch] = useReducer(socketReducer, initialSocketState);
   const accessToken = useAuthStore((state) => state.accessToken);
 
   useEffect(() => {
     if (!accessToken) {
-      if (socket) {
-        socket.disconnect();
-      }
-      setSocket(null);
-      setIsConnected(false);
       return;
     }
 
@@ -38,15 +63,14 @@ export function SocketProvider({ children }: SocketProviderProps) {
       reconnectionDelay: 1000,
     });
 
-    socketInstance.on("connect", () => setIsConnected(true));
-    socketInstance.on("disconnect", () => setIsConnected(false));
+    socketInstance.on("connect", () => dispatch({ type: "connected" }));
+    socketInstance.on("disconnect", () => dispatch({ type: "disconnected" }));
 
-    setSocket(socketInstance);
+    dispatch({ type: "ready", socket: socketInstance });
 
     return () => {
       socketInstance.disconnect();
-      setSocket(null);
-      setIsConnected(false);
+      dispatch({ type: "reset" });
     };
   }, [accessToken]);
 

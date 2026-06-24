@@ -3,13 +3,13 @@ import { UserProfileSchema } from "@/src/shared/schemas/profile.schema";
 
 export const LoginPayloadSchema = z.object({
   email: z.string().email("Digite um e-mail valido."),
-  password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres."),
+  password: z.string().min(1, "Digite sua senha."),
 });
 
 export const RegisterPayloadSchema = z.object({
   name: z.string().min(2, "Informe seu nome."),
   email: z.string().email("Digite um e-mail valido."),
-  password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres."),
+  password: z.string().min(1, "Digite uma senha."),
 });
 
 export const AuthTokensSchema = z.object({

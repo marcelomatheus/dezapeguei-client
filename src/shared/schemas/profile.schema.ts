@@ -44,6 +44,7 @@ export const UserProfileSchema = z.object({
   city: z.string().nullable().optional(),
   state: z.string().nullable().optional(),
   plan: UserPlanSchema.default("FREE"),
+  entrepreneurVerifiedAt: z.string().or(z.date()).nullable().optional(),
 });
 
 export const UpdateProfilePayloadSchema = z.object({

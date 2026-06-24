@@ -15,6 +15,19 @@ export type Offer = {
   imageUrl: string[];
   keywords?: Array<{ id: string; word: string }>;
   specifications?: Array<{ id: string; key: string; value: string }>;
+  seller?: {
+    id: string;
+    name?: string | null;
+    avatar?: string | null;
+    rating: number;
+    entrepreneur?: {
+      isActive: boolean;
+      verifiedAt?: string | null;
+      businessName?: string | null;
+      storefrontSlug?: string | null;
+    };
+  };
+  badges: string[];
   createdAt: string;
   updatedAt: string;
 };
@@ -33,6 +46,7 @@ export type UserProfile = {
   city?: string;
   state?: string;
   plan: "FREE" | "PREMIUM" | "ENTERPRISE";
+  entrepreneurVerifiedAt?: string | null;
 };
 
 export type ChatMessageType = "TEXT" | "IMAGE" | "OFFER" | "SYSTEM";

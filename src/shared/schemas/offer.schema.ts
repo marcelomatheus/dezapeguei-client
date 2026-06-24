@@ -27,6 +27,19 @@ export const OfferSpecificationSchema = z.object({
   value: z.string(),
 });
 
+export const OfferSellerSchema = z.object({
+  id: z.string(),
+  name: z.string().nullable().optional(),
+  avatar: z.string().nullable().optional(),
+  rating: z.number().default(0),
+  entrepreneur: z.object({
+    isActive: z.boolean(),
+    verifiedAt: z.string().or(z.date()).nullable().optional(),
+    businessName: z.string().nullable().optional(),
+    storefrontSlug: z.string().nullable().optional(),
+  }).optional(),
+}).optional();
+
 export const OfferSchema = z.object({
   id: z.string(),
   slug: z.string(),
@@ -41,6 +54,8 @@ export const OfferSchema = z.object({
   sellerId: z.string(),
   keywords: z.array(OfferKeywordSchema).optional(),
   specifications: z.array(OfferSpecificationSchema).optional(),
+  seller: OfferSellerSchema,
+  badges: z.array(z.string()).default([]),
   createdAt: z.string().or(z.date()),
   updatedAt: z.string().or(z.date()),
 });

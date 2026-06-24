@@ -46,6 +46,7 @@ export function AuthSessionProvider({ children }: AuthSessionProviderProps) {
     bio?: string | null;
     city?: string | null;
     state?: string | null;
+    entrepreneurVerifiedAt?: string | Date | null;
   }): UserProfile => ({
     ...profile,
     name: profile.name ?? undefined,
@@ -54,6 +55,9 @@ export function AuthSessionProvider({ children }: AuthSessionProviderProps) {
     bio: profile.bio ?? undefined,
     city: profile.city ?? undefined,
     state: profile.state ?? undefined,
+    entrepreneurVerifiedAt: profile.entrepreneurVerifiedAt
+      ? String(profile.entrepreneurVerifiedAt)
+      : null,
   });
 
   useEffect(() => {

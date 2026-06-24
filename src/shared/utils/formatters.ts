@@ -53,3 +53,42 @@ export function normalizePhoneForWhatsapp(input?: string | null): string | null 
 
   return digits.length <= 11 ? `55${digits}` : digits;
 }
+
+export function formatDateBR(value: string | Date): string {
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(value));
+}
+
+export function formatDateTimeBR(value: string | Date): string {
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+export function normalizeDocumentDigits(input?: string | null): string {
+  return (input ?? "").replace(/\D/g, "").slice(0, 14);
+}
+
+export function maskCpfCnpj(input: string): string {
+  const digits = normalizeDocumentDigits(input);
+
+  if (digits.length <= 11) {
+    return digits
+      .replace(/^(\d{3})(\d)/, "$1.$2")
+      .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+      .replace(/\.(\d{3})(\d)/, ".$1-$2");
+  }
+
+  return digits
+    .replace(/^(\d{2})(\d)/, "$1.$2")
+    .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+    .replace(/\.(\d{3})(\d)/, ".$1/$2")
+    .replace(/(\d{4})(\d)/, "$1-$2");
+}

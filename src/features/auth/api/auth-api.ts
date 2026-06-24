@@ -11,22 +11,27 @@ import { UserProfileModel, UserProfileSchema } from "@/src/shared/schemas/profil
 
 export type { AuthTokens };
 
+export type RegisterResponse = {
+  emailConfirmationRequired: boolean;
+  message: string;
+  user: UserProfileModel;
+};
+
 export async function login(payload: LoginPayload): Promise<AuthSessionResponse> {
   const response = await httpClient.post("/auth/login", payload);
   return AuthSessionResponseSchema.parse(response.data);
 }
 
-export async function register(payload: RegisterPayload): Promise<{ user: UserProfileModel }> {
+export async function register(payload: RegisterPayload): Promise<RegisterResponse> {
   const response = await httpClient.post("/auth/register", payload);
 
   return {
+    emailConfirmationRequired: Boolean(response.data.emailConfirmationRequired),
+    message:
+      response.data.message ??
+      "Cadastro realizado. Enviamos um e-mail de confirmação para ativar sua conta.",
     user: UserProfileSchema.parse(response.data.user),
   };
-}
-
-export async function loginAfterRegister(payload: LoginPayload): Promise<AuthSessionResponse> {
-  const response = await httpClient.post("/auth/login", payload);
-  return AuthSessionResponseSchema.parse(response.data);
 }
 
 export async function refreshToken(refreshTokenValue: string): Promise<AuthSessionResponse> {
