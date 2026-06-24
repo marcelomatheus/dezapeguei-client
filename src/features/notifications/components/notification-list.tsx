@@ -1,5 +1,6 @@
 "use client";
 
+import { Bell } from "lucide-react";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { NotificationItem } from "@/src/features/notifications/components/notification-item";
 import { NotificationModel } from "@/src/shared/schemas/notification.schema";
@@ -25,7 +26,13 @@ export function NotificationList({ notifications, isLoading = false, onRead }: N
   }
 
   if (notifications.length === 0) {
-    return <p className="text-sm text-zinc-700">Nenhuma notificacao no momento.</p>;
+    return (
+      <div className="rounded-lg border border-dashed border-zinc-300 bg-white p-8 text-center">
+        <Bell className="mx-auto h-8 w-8 text-zinc-300" />
+        <h2 className="mt-2 font-semibold text-zinc-900">Nenhuma notificação no momento</h2>
+        <p className="mt-1 text-sm text-zinc-600">Alertas de mensagens, vendas e ofertas aparecerão aqui.</p>
+      </div>
+    );
   }
 
   return (

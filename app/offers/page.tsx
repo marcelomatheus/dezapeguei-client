@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -107,20 +108,43 @@ function OffersPageContent() {
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 sm:py-6">
-      <section className="rounded-lg border border-orange-200 bg-orange-50 px-4 py-3">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-orange-700">Marketplace Dezapeguei</p>
-            <h1 className="mt-1 text-2xl font-black text-zinc-950 sm:text-3xl">Ofertas para comprar agora</h1>
-            <p className="mt-1 text-sm text-zinc-700">Compare preços, salve favoritos e negocie direto com vendedores próximos.</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Link href="/offers/create" className="rounded-md bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700">
-              Anunciar grátis
-            </Link>
-            <Link href="/comunidades" className="rounded-md border border-orange-300 bg-white px-4 py-2 text-sm font-semibold text-orange-800 hover:bg-orange-100">
-              Comunidades
-            </Link>
+      <section className="overflow-hidden rounded-lg border border-orange-200 bg-orange-50">
+        <div className="relative min-h-[260px]">
+          <Image
+            src="/ecommerce-marketplace-hero.png"
+            alt="Produtos organizados em uma vitrine de marketplace"
+            fill
+            priority
+            className="object-cover object-center"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-linear-to-r from-orange-50 via-orange-50/90 via-35% to-orange-50/10" />
+          <div className="absolute inset-y-0 left-0 w-[30%] bg-orange-50" />
+
+          <div className="relative flex min-h-[260px] max-w-xl flex-col justify-center px-4 py-5 sm:px-5">
+            <p className="text-xs font-bold uppercase tracking-wide text-orange-700">
+              Marketplace Dezapeguei
+            </p>
+            <h1 className="mt-1 text-2xl font-black text-zinc-950 sm:text-3xl">
+              Ofertas para comprar agora
+            </h1>
+            <p className="mt-1 max-w-2xl text-sm text-zinc-700">
+              Compare preços, salve favoritos e negocie direto com vendedores próximos.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link
+                href="/offers/create"
+                className="rounded-md bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700"
+              >
+                Anunciar grátis
+              </Link>
+              <Link
+                href="/comunidades"
+                className="rounded-md border border-orange-300 bg-white px-4 py-2 text-sm font-semibold text-orange-800 hover:bg-orange-100"
+              >
+                Comunidades
+              </Link>
+            </div>
           </div>
         </div>
       </section>

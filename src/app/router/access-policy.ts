@@ -1,4 +1,4 @@
-export const publicRoutes = ["/offers", "/offers/:id", "/login", "/register"] as const;
+export const publicRoutes = ["/offers", "/offers/:id", "/login", "/register", "/empreendedores/:id"] as const;
 
 export const protectedRoutes = [
   "/offers/create",
@@ -13,6 +13,15 @@ export const protectedRoutes = [
   "/users/:id",
   "/notifications",
   "/sales",
+  "/empreendedor",
+  "/empreendedor/validar",
+  "/empreendedor/checkout",
+  "/empreendedor/checkout/session/:sessionId",
+  "/empreendedor/success",
+  "/empreendedor/cancel",
+  "/empreendedor/dashboard",
+  "/comunidades",
+  "/comunidades/:slug",
 ] as const;
 
 export function isPublicRoute(pathname: string): boolean {

@@ -17,7 +17,7 @@ export function NotificationBell() {
           {unreadCount > 99 ? "99+" : unreadCount}
         </span>
       ) : null}
-      <span className="sr-only">Abrir notificacoes</span>
+      <span className="sr-only">Abrir notificações</span>
     </Link>
   );
 }

@@ -5,7 +5,7 @@ import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { getSaleStatusLabel } from "@/src/shared/i18n/enum-labels";
 import { SaleModel } from "@/src/shared/schemas/sale.schema";
-import { formatMoneyBRL } from "@/src/shared/utils/formatters";
+import { formatDateTimeBR, formatMoneyBRL } from "@/src/shared/utils/formatters";
 
 type SaleDetailProps = {
   sale: SaleModel;
@@ -33,11 +33,10 @@ export function SaleDetail({ sale, isUpdating = false, onUpdateStatus }: SaleDet
         <Badge variant={getStatusVariant(sale.status)}>{getSaleStatusLabel(sale.status)}</Badge>
       </CardHeader>
       <CardContent className="space-y-2 text-sm text-zinc-700">
-        <p>ID: {sale.id}</p>
-        <p>Oferta: {sale.offerId}</p>
-        <p>Comprador: {sale.buyerId}</p>
-        <p>Valor: {formatMoneyBRL(sale.amount)}</p>
-        <p>Data da venda: {new Date(sale.saleDate).toLocaleString()}</p>
+        <p><strong>Produto:</strong> {sale.offer?.title ?? "Produto não informado"}</p>
+        <p><strong>Comprador:</strong> {sale.buyer?.name ?? "Comprador não informado"}</p>
+        <p><strong>Valor:</strong> {formatMoneyBRL(sale.amount)}</p>
+        <p><strong>Data:</strong> {formatDateTimeBR(sale.saleDate)}</p>
 
         {onUpdateStatus ? (
           <div className="mt-3 flex gap-2">
@@ -47,7 +46,7 @@ export function SaleDetail({ sale, isUpdating = false, onUpdateStatus }: SaleDet
               onClick={() => onUpdateStatus("COMPLETED")}
               disabled={sale.status === "COMPLETED"}
             >
-              Marcar como concluida
+              Marcar como concluída
             </Button>
             <Button
               type="button"

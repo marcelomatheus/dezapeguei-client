@@ -36,7 +36,14 @@ export function Button({
       disabled={disabled || isLoading}
       {...props}
     >
-      {isLoading ? "Carregando..." : children}
+      {isLoading ? (
+        <>
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" aria-hidden="true" />
+          <span className="sr-only">Carregando</span>
+        </>
+      ) : (
+        children
+      )}
     </button>
   );
 }

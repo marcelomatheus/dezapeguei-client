@@ -55,16 +55,28 @@ type OfferFormProps = CreateOfferFormProps | EditOfferFormProps;
 export function OfferForm(props: OfferFormProps) {
   const fieldClass =
     "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-500 focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-100";
+  const labelClass = "flex flex-col gap-1 text-sm font-medium text-zinc-800";
 
   if (props.mode === "create") {
     const createForm = props.form;
 
     return (
       <form onSubmit={props.onSubmit} className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-        <h1 className="text-2xl font-bold text-zinc-900">Criar oferta</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-zinc-900">Criar anúncio</h1>
+          <p className="mt-1 text-sm text-zinc-600">Capriche nas fotos, preço e descrição para aumentar a confiança do comprador.</p>
+        </div>
 
-        <input {...createForm.register("title")} placeholder="Titulo" className={fieldClass} />
-        <textarea {...createForm.register("description")} placeholder="Descricao" className={`${fieldClass} min-h-28`} />
+        <label className={labelClass}>
+          Título
+          <input {...createForm.register("title")} placeholder="Ex.: iPhone 13 128GB" className={fieldClass} />
+        </label>
+        <label className={labelClass}>
+          Descrição
+          <textarea {...createForm.register("description")} placeholder="Estado do produto, acessórios, motivo da venda..." className={`${fieldClass} min-h-28`} />
+        </label>
+        <label className={labelClass}>
+          Preço
         <Controller
           control={createForm.control}
           name="price"
@@ -77,31 +89,43 @@ export function OfferForm(props: OfferFormProps) {
             />
           )}
         />
+        </label>
 
-        <input
-          type="number"
-          min={0}
-          step="0.01"
-          {...createForm.register("promotion")}
-          placeholder="Desconto em % (opcional)"
-          className={fieldClass}
-        />
+        <label className={labelClass}>
+          Preço promocional opcional
+          <input
+            type="number"
+            min={0}
+            step="0.01"
+            {...createForm.register("promotion")}
+            placeholder="Valor final com desconto"
+            className={fieldClass}
+          />
+        </label>
 
-        <select {...createForm.register("categoryId")} className={fieldClass}>
-          <option value="">Selecione uma categoria</option>
-          {props.categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className={labelClass}>
+            Categoria
+            <select {...createForm.register("categoryId")} className={fieldClass}>
+              <option value="">Selecione uma categoria</option>
+              {props.categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </label>
 
-        <select {...createForm.register("condition")} className={fieldClass}>
-          <option value="NEW">{getOfferConditionLabel("NEW")}</option>
-          <option value="USED_LIKE_NEW">{getOfferConditionLabel("USED_LIKE_NEW")}</option>
-          <option value="USED_GOOD">{getOfferConditionLabel("USED_GOOD")}</option>
-          <option value="USED_FAIR">{getOfferConditionLabel("USED_FAIR")}</option>
-        </select>
+          <label className={labelClass}>
+            Condição
+            <select {...createForm.register("condition")} className={fieldClass}>
+              <option value="NEW">{getOfferConditionLabel("NEW")}</option>
+              <option value="USED_LIKE_NEW">{getOfferConditionLabel("USED_LIKE_NEW")}</option>
+              <option value="USED_GOOD">{getOfferConditionLabel("USED_GOOD")}</option>
+              <option value="USED_FAIR">{getOfferConditionLabel("USED_FAIR")}</option>
+            </select>
+          </label>
+        </div>
 
         <ImageUpload
           value={createForm.watch("imageFiles") ?? []}
@@ -110,17 +134,23 @@ export function OfferForm(props: OfferFormProps) {
           }}
         />
 
-        <textarea
-          {...createForm.register("keywordsInput")}
-          placeholder="Palavras-chave separadas por vírgula"
-          className={`${fieldClass} min-h-20`}
-        />
+        <label className={labelClass}>
+          Palavras-chave
+          <textarea
+            {...createForm.register("keywordsInput")}
+            placeholder="Separadas por vírgula: celular, apple, 128gb"
+            className={`${fieldClass} min-h-20`}
+          />
+        </label>
 
-        <textarea
-          {...createForm.register("specificationsInput")}
-          placeholder="Especificações (uma por linha, formato: Chave: Valor)"
-          className={`${fieldClass} min-h-28`}
-        />
+        <label className={labelClass}>
+          Especificações
+          <textarea
+            {...createForm.register("specificationsInput")}
+            placeholder="Uma por linha, formato: Chave: Valor"
+            className={`${fieldClass} min-h-28`}
+          />
+        </label>
 
         <Button type="submit" isLoading={props.isPending}>
           Salvar oferta

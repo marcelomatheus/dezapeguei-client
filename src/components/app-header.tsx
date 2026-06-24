@@ -3,19 +3,37 @@
 import Link from "next/link";
 import { FormEvent, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ChevronDown, LogOut, Search, UserRound } from "lucide-react";
+import { BadgeCheck, Bell, ChevronDown, Heart, LayoutGrid, LogOut, MessageCircle, MessagesSquare, PackagePlus, Search, ShoppingBag, Store, UserRound } from "lucide-react";
 import { useAuthStore } from "@/src/shared/auth/auth-store";
 import { useAuthSession } from "@/src/shared/auth/use-auth-session";
 import { Dropdown, DropdownContent, DropdownItem, DropdownSeparator, DropdownTrigger } from "@/src/components/ui/dropdown";
 import { useCategoriesQuery } from "@/src/features/offers/hooks/use-categories-query";
 
-const menuItems = [
-  { href: "/offers", label: "Ofertas" },
-  { href: "/offers/my", label: "Meus anúncios" },
-  { href: "/sales", label: "Vendas" },
-  { href: "/chats", label: "Chat" },
-  { href: "/wishlists", label: "Favoritos" },
-  { href: "/notifications", label: "Notificações" },
+const megaMenuGroups = [
+  {
+    title: "Comprar",
+    items: [
+      { href: "/offers", label: "Explorar ofertas", description: "Buscar produtos, filtrar categorias e comparar preços.", icon: ShoppingBag },
+      { href: "/wishlists", label: "Favoritos", description: "Rever itens salvos e acompanhar oportunidades.", icon: Heart },
+      { href: "/comunidades", label: "Comunidades", description: "Acompanhar conversas públicas e ofertas compartilhadas.", icon: MessagesSquare },
+    ],
+  },
+  {
+    title: "Vender",
+    items: [
+      { href: "/offers/create", label: "Anunciar grátis", description: "Publicar um novo item no marketplace.", icon: PackagePlus },
+      { href: "/offers/my", label: "Meus anúncios", description: "Gerenciar status, fotos e preços dos anúncios.", icon: LayoutGrid },
+      { href: "/sales", label: "Vendas e compras", description: "Consultar transações registradas.", icon: Store },
+    ],
+  },
+  {
+    title: "Relacionamento",
+    items: [
+      { href: "/chats", label: "Conversas", description: "Negociar direto com compradores e vendedores.", icon: MessageCircle },
+      { href: "/notifications", label: "Notificações", description: "Ver alertas de preço, mensagens e sistema.", icon: Bell },
+      { href: "/empreendedor/dashboard", label: "Central empreendedor", description: "Validar negócio, vitrine, métricas e recursos premium.", icon: BadgeCheck },
+    ],
+  },
 ];
 
 const categoryHighlights = [
@@ -105,23 +123,49 @@ export function AppHeader() {
           </button>
         </form>
 
-        <nav aria-label="Menu principal" className="hidden items-center gap-2 lg:flex">
-          {menuItems.map((item) => {
-            const isActive = pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={[
-                  "rounded-full px-3 py-2 text-sm",
-                  isActive ? "bg-orange-100 font-semibold text-orange-800" : "text-zinc-700 hover:bg-zinc-100",
-                ].join(" ")}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <Dropdown>
+          <DropdownTrigger asChild>
+            <button
+              type="button"
+              className="hidden items-center gap-2 rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-semibold text-zinc-800 transition hover:border-orange-300 hover:bg-orange-50 lg:inline-flex"
+            >
+              <LayoutGrid className="h-4 w-4 text-orange-600" />
+              Menu
+              <ChevronDown className="h-4 w-4 text-zinc-500" />
+            </button>
+          </DropdownTrigger>
+          <DropdownContent align="end" className="w-[min(920px,calc(100vw-2rem))] rounded-2xl p-4">
+            <div className="grid gap-4 lg:grid-cols-3">
+              {megaMenuGroups.map((group) => (
+                <section key={group.title} className="space-y-2">
+                  <h2 className="px-2 text-xs font-bold uppercase tracking-wide text-zinc-500">{group.title}</h2>
+                  {group.items.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = pathname.startsWith(item.href);
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={[
+                          "surface-motion flex gap-3 rounded-xl p-3 outline-none hover:bg-orange-50 focus:bg-orange-50",
+                          isActive ? "bg-orange-50 ring-1 ring-orange-200" : "",
+                        ].join(" ")}
+                      >
+                        <span className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-orange-700">
+                          <Icon className="h-4 w-4" />
+                        </span>
+                        <span>
+                          <span className="block text-sm font-semibold text-zinc-900">{item.label}</span>
+                          <span className="mt-0.5 block text-xs leading-5 text-zinc-600">{item.description}</span>
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </section>
+              ))}
+            </div>
+          </DropdownContent>
+        </Dropdown>
 
         <div className="ml-auto flex items-center gap-2">
           {user ? (
@@ -147,6 +191,26 @@ export function AppHeader() {
                     <span className="flex items-center gap-2">
                       <UserRound className="h-4 w-4 text-zinc-500" />
                       Minha Conta
+                    </span>
+                  </DropdownItem>
+                  <DropdownItem
+                    onSelect={() => {
+                      router.push("/empreendedor/dashboard");
+                    }}
+                  >
+                    <span className="flex items-center gap-2">
+                      <BadgeCheck className="h-4 w-4 text-zinc-500" />
+                      Central empreendedor
+                    </span>
+                  </DropdownItem>
+                  <DropdownItem
+                    onSelect={() => {
+                      router.push("/comunidades");
+                    }}
+                  >
+                    <span className="flex items-center gap-2">
+                      <MessagesSquare className="h-4 w-4 text-zinc-500" />
+                      Comunidades
                     </span>
                   </DropdownItem>
                   <DropdownSeparator className="my-1 h-px bg-zinc-200" />

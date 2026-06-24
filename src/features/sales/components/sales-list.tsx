@@ -1,11 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/src/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { getSaleStatusLabel } from "@/src/shared/i18n/enum-labels";
 import { SaleModel } from "@/src/shared/schemas/sale.schema";
-import { formatMoneyBRL } from "@/src/shared/utils/formatters";
+import { formatDateTimeBR, formatMoneyBRL } from "@/src/shared/utils/formatters";
 
 type SalesListProps = {
   sales: SaleModel[];
@@ -26,25 +27,57 @@ function getStatusVariant(status: SaleModel["status"]) {
 
 export function SalesList({ sales, isLoading = false }: SalesListProps) {
   if (isLoading) {
-    return <p className="text-sm text-zinc-500">Carregando vendas...</p>;
+    return (
+      <div className="grid gap-3" aria-label="Vendas carregando">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <Card key={index} className="animate-pulse">
+            <CardHeader className="flex flex-row items-center justify-between gap-2">
+              <div className="h-5 w-32 rounded bg-zinc-200" />
+              <div className="h-6 w-20 rounded-full bg-zinc-200" />
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="h-4 w-40 rounded bg-zinc-200" />
+              <div className="h-4 w-56 rounded bg-zinc-200" />
+              <div className="h-4 w-24 rounded bg-zinc-200" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
   }
 
   if (sales.length === 0) {
-    return <p className="text-sm text-zinc-500">Nenhuma venda encontrada.</p>;
+    return (
+      <div className="rounded-lg border border-dashed border-zinc-300 bg-white p-8 text-center">
+        <h2 className="font-semibold text-zinc-900">Nenhuma transação encontrada</h2>
+        <p className="mt-1 text-sm text-zinc-600">Compras e vendas confirmadas aparecerão aqui.</p>
+      </div>
+    );
   }
 
   return (
     <div className="grid gap-3">
       {sales.map((sale) => (
-        <Card key={sale.id}>
-          <CardHeader className="flex flex-row items-center justify-between gap-2">
-            <CardTitle>Venda {sale.id}</CardTitle>
-            <Badge variant={getStatusVariant(sale.status)}>{getSaleStatusLabel(sale.status)}</Badge>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm text-zinc-700">
-            <p>Valor: {formatMoneyBRL(sale.amount)}</p>
-            <p>Data: {new Date(sale.saleDate).toLocaleString()}</p>
-            <Link href={`/sales/${sale.id}`} className="inline-block text-orange-700 hover:underline">
+        <Card key={sale.id} className="p-3">
+          <CardContent className="grid gap-3 p-0 sm:grid-cols-[88px_1fr_auto] sm:items-center">
+            <div className="relative h-24 overflow-hidden rounded-md bg-zinc-100 sm:h-20">
+              {sale.offer?.imageUrl?.[0] ? (
+                <Image src={sale.offer.imageUrl[0]} alt={sale.offer.title} fill unoptimized className="object-cover" />
+              ) : (
+                <div className="flex h-full items-center justify-center text-xs text-zinc-500">Sem imagem</div>
+              )}
+            </div>
+
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <CardTitle className="line-clamp-1 text-base">{sale.offer?.title ?? "Produto vendido"}</CardTitle>
+                <Badge variant={getStatusVariant(sale.status)}>{getSaleStatusLabel(sale.status)}</Badge>
+              </div>
+              <p className="mt-1 text-lg font-bold text-orange-600">{formatMoneyBRL(sale.amount)}</p>
+              <p className="text-xs text-zinc-500">{formatDateTimeBR(sale.saleDate)}</p>
+            </div>
+
+            <Link href={`/sales/${sale.id}`} className="inline-flex justify-center rounded-md border border-zinc-300 px-3 py-2 text-sm font-semibold text-zinc-800 hover:bg-zinc-50">
               Ver detalhes
             </Link>
           </CardContent>
