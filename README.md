@@ -1,7 +1,7 @@
 # Dezapeguei Client Web
 
 Frontend web da plataforma Dezapeguei, desenvolvido em Next.js (App Router), com TypeScript
-strict e arquitetura por features orientada a clean code e padrao bulletproof.
+strict e arquitetura por features orientada a clean code e padrao bulletproof. Agora com comunidades.
 
 ## Contexto do Monorepo
 
